@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Loan Status Prediction</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      
+      margin: 0;
+      background-image: url('pic2.jpg');
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+      color: #000000;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.415);
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .area {
+      width: 50%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      box-sizing: border-box;
+    }
+
+    .submit {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit:hover {
+      background-color: #0056b3;
+    }
+
+    #uiEstimatedStatus {
+      margin-top: 20px;
+      text-align: center;
+      color: #09070797;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    var jq = jQuery.noConflict();
+    function onclickloanstatus() {
+      var gender = document.getElementById("Gdr");
+      var married = document.getElementById("Mrd");
+      var dependants = document.getElementById("dpnts");
+      var education = document.getElementById("Edc");
+      var selfEmployed = document.getElementById("SE");
+      var applicationIncome = document.getElementById("Apinc");
+      var coapplicantIncome = document.getElementById("Coapinc");
+      var loanAmount = document.getElementById("LAmnt");
+      var loanAmountTerm = document.getElementById("LAT");
+      var creditHistory = document.getElementById("CrHtry");
+      var propertyArea = document.getElementById("PprAr");
+      var eststatus = document.getElementById("uiEstimatedStatus");
+      var url = "http://127.0.0.1:5000/loan_status";
+      jq.ajax({
+        type: "POST",
+        url: url,
+        data: {
+          Gdr: parseInt(gender.value),
+          Mrd: parseInt(married.value),
+          dpnts: parseInt(dependants.value),
+          Edc: parseInt(education.value),
+          SE: parseInt(selfEmployed.value),
+          Apinc: parseInt(applicationIncome.value),
+          Coapinc: parseInt(coapplicantIncome.value),
+          LAmnt: parseInt(loanAmount.value),
+          LAT: parseInt(loanAmountTerm.value),
+          CrHtry: parseInt(creditHistory.value),
+          PprAr: parseInt(propertyArea.value)
+        },
+        success: function(data) {
+          console.log(data);
+          var loanStatus = data.loan_status.toString();
+          eststatus.innerHTML = "<h2>" + loanStatus + "</h2>";
+          if (loanStatus === "Y") {
+            alert("Congratulations! Your loan application has been approved.");
+          } else {
+            alert("Uh Oh! Better luck next time. Your loan application has been rejected.");
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log(error);
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Home Loan Status Prediction</h1>
+    <form class="form" method="POST">
+      <h2>Gender</h2>
+      <input class="area" type="text" id="Gdr" value="">
+      <h2>Married</h2>
+      <input class="area" type="text" id="Mrd" value="">
+      <h2>Dependents</h2>
+      <input class="area" type="text" id="dpnts" value="">
+      <h2>Education</h2>
+      <input class="area" type="text" id="Edc" value="">
+      <h2>Self Employed</h2>
+      <input class="area" type="text" id="SE" value="">
+      <h2>Applicant Income</h2>
+      <input class="area" type="text" id="Apinc" value="">
+      <h2>Coapplicant Income</h2>
+      <input class="area" type="text" id="Coapinc" value="">
+      <h2>Loan Amount</h2>
+      <input class="area" type="text" id="LAmnt" value="">
+      <h2>Loan Amount Term</h2>
+      <input class="area" type="text" id="LAT" value="">
+      <h2>Credit History</h2>
+      <input class="area" type="text" id="CrHtry" value="">
+      <h2>Property Area</h2>
+      <input class="area" type="text" id="PprAr" value="">
+      <br>
+      <button class="submit" onclick="onclickloanstatus()" type="button">Loan Status</button>
+      <div id="uiEstimatedStatus"><h2>Result</h2></div>
+    </form>
+  </div>
+</body>
+</html>
